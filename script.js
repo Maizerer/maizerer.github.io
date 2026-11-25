@@ -84,7 +84,7 @@ const projects = [
       'После моего ухода сайт переработали, по ссылке актуальная версия'
     ],
     stack: ['Vue', 'Nuxt'],
-    demo: 'other-text/index.html', code: '',
+    demo: 'https://iloveplove.ru/', code: '',
     images: ['images/plove-1.jpg', 'images/plove-2.jpg', 'images/plove-3.jpg', 'images/plove-4.jpg']
   },
   {
@@ -134,7 +134,7 @@ const projects = [
     role: 'Frontend и backend',
     points: ['Разработал клиентскую и серверную часть'],
     stack: ['React', 'Next.js', 'Nest.js'],
-    demoApp: 'https://example.com', type: 'mobile', code: '',
+    demoApp: 'https://jambeat.vercel.app/', type: 'mobile', code: '',
     images: ['images/jambeat-2.png', 'images/jambeat-3.png', 'images/jambeat-4.png', 'images/jambeat-5.png', 'images/jambeat-6.png', 'images/jambeat-7.png', 'images/jambeat-8.png', 'images/jambeat-9.png']
   },
   {
