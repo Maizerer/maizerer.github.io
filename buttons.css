@@ -1,0 +1,335 @@
+/* Варианты кнопки. Какой использовать, задаёт data-variant у кнопки (см. buttons.js) */
+@property --a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+.btn {
+  position: relative; display: inline-flex; align-items: center; gap: .6rem; overflow: hidden; isolation: isolate;
+  padding: .8rem 1.5rem; border-radius: 9999px; background: #1B1F2A; color: #EDEFEA;
+  font-size: .875rem; font-weight: 600; line-height: 1.2; white-space: nowrap; cursor: pointer;
+}
+.b-arrow { flex: none; }
+
+/* 1. roll: текст прокручивается вверх, на его место приходит копия; стрелка в акцентном кружке */
+.btn--roll { padding-right: 1rem; transition: background-color .3s ease; }
+.b-roll { display: block; height: 1.2em; overflow: hidden; }
+.b-roll-in { display: flex; flex-direction: column; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.b-roll-in > span { display: block; height: 1.2em; }
+.b-chip { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: #2B50FF; transition: transform .5s cubic-bezier(.22, 1, .36, 1), background-color .3s; }
+.btn--roll:hover .b-roll-in, .btn--roll:focus-visible .b-roll-in { transform: translateY(-50%); }
+.btn--roll:hover .b-chip, .btn--roll:focus-visible .b-chip { transform: rotate(-90deg); }
+
+/* 2. fill: контурная кнопка, заливка растёт из угла */
+.btn--fill { background: transparent; color: #1B1F2A; box-shadow: inset 0 0 0 2px #1B1F2A; transition: color .4s ease, box-shadow .4s ease; }
+.btn--fill::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #2B50FF; clip-path: circle(0% at 12% 100%); transition: clip-path .6s cubic-bezier(.22, 1, .36, 1); }
+.btn--fill .b-arrow { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
+.btn--fill:hover, .btn--fill:focus-visible { color: #EDEFEA; box-shadow: inset 0 0 0 2px #2B50FF; }
+.btn--fill:hover::before, .btn--fill:focus-visible::before { clip-path: circle(150% at 12% 100%); }
+.btn--fill:hover .b-arrow, .btn--fill:focus-visible .b-arrow { transform: translateY(3px); }
+
+/* 3. knob: круглая «ручка» слева, при наведении заливает всю кнопку */
+.btn--knob { padding: .4rem 1.6rem .4rem .4rem; gap: .8rem; }
+.btn--knob::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #2B50FF; clip-path: circle(1.05rem at 1.45rem 50%); transition: clip-path .6s cubic-bezier(.22, 1, .36, 1); }
+.b-knob { display: grid; place-items: center; width: 2.1rem; height: 2.1rem; color: #fff; }
+.b-knob svg { transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.btn--knob:hover::before, .btn--knob:focus-visible::before { clip-path: circle(160% at 1.45rem 50%); }
+.btn--knob:hover .b-knob svg, .btn--knob:focus-visible .b-knob svg { transform: rotate(-90deg); }
+
+/* 4. draw: рамка прорисовывается по кругу акцентным цветом */
+.btn--draw { background: transparent; color: #1B1F2A; box-shadow: inset 0 0 0 2px #1B1F2A; transition: color .4s ease; }
+.btn--draw::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 2px; pointer-events: none;
+  background: conic-gradient(from 0deg, #2B50FF var(--a), transparent var(--a));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: --a .8s cubic-bezier(.22, 1, .36, 1);
+}
+.btn--draw:hover, .btn--draw:focus-visible { color: #2B50FF; }
+.btn--draw:hover::before, .btn--draw:focus-visible::before { --a: 360deg; }
+
+/* 5. term: при наведении надпись превращается в команду, которая печатается */
+.btn--term { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 500; }
+.b-term { display: inline-grid; min-width: 19ch; }
+.b-term > span { grid-area: 1 / 1; white-space: nowrap; }
+.b-term-a { transition: opacity .15s; }
+.b-term-b { width: 0; overflow: hidden; border-right: 2px solid transparent; color: #fff; }
+.b-term-b i { color: #7C93FF; font-style: normal; }
+.btn--term:hover .b-term-a, .btn--term:focus-visible .b-term-a { opacity: 0; }
+.btn--term:hover .b-term-b, .btn--term:focus-visible .b-term-b { animation: typing .9s steps(18, end) forwards, caret .7s step-end .9s infinite; }
+@keyframes typing { to { width: 18ch; border-right-color: #7C93FF; } }
+@keyframes caret { 0%, 100% { border-right-color: #7C93FF; } 50% { border-right-color: transparent; } }
+
+/* 6. press: плоская «кнопка с тенью», физически вдавливается при нажатии */
+.btn--press { background: #fff; color: #1B1F2A; box-shadow: 0 0 0 2px #1B1F2A, 4px 4px 0 2px #1B1F2A; overflow: visible; transition: box-shadow .15s ease, translate .15s ease, background-color .2s; }
+.btn--press:hover, .btn--press:focus-visible { background: #2B50FF; color: #fff; translate: -2px -2px; box-shadow: 0 0 0 2px #1B1F2A, 6px 6px 0 2px #1B1F2A; }
+.btn--press:active { translate: 4px 4px; box-shadow: 0 0 0 2px #1B1F2A, 0 0 0 2px #1B1F2A; }
+
+/* 7. wave: буквы по очереди подпрыгивают */
+.b-wave > span { display: inline-block; }
+.btn--wave { transition: background-color .3s ease; }
+.btn--wave:hover, .btn--wave:focus-visible { background: #2B50FF; }
+.btn--wave:hover .b-wave > span, .btn--wave:focus-visible .b-wave > span { animation: hop .5s ease calc(var(--i) * 28ms) 1; }
+@keyframes hop { 40% { transform: translateY(-.32em); } }
+
+/* 8. ripple: заливка растёт из точки, куда зашёл курсор, и уходит туда, откуда он вышел */
+.btn--ripple { background: transparent; color: #1B1F2A; box-shadow: inset 0 0 0 2px #1B1F2A; transition: color .4s ease, box-shadow .4s ease; }
+.btn--ripple::before { content: ''; position: absolute; inset: 0; z-index: -1; background: #2B50FF; clip-path: circle(0 at var(--x, 50%) var(--y, 50%)); transition: clip-path .55s cubic-bezier(.22, 1, .36, 1); }
+.btn--ripple:hover, .btn--ripple:focus-visible { color: #EDEFEA; box-shadow: inset 0 0 0 2px #2B50FF; }
+.btn--ripple:hover::before, .btn--ripple:focus-visible::before { clip-path: circle(170% at var(--x, 50%) var(--y, 50%)); }
+
+/* 9. marquee: при наведении надпись бежит бегущей строкой */
+.btn--marquee { transition: background-color .3s ease; }
+.b-mq-static { display: inline-flex; align-items: center; gap: .5rem; transition: opacity .2s; }
+.b-mq-run {
+  position: absolute; inset: 0; display: flex; align-items: center; overflow: hidden; opacity: 0; transition: opacity .2s;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent); mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+.b-mq-track { display: flex; width: max-content; animation: mq 3.2s linear infinite; animation-play-state: paused; }
+.b-mq-group { display: flex; }
+.b-mq-item { display: inline-flex; align-items: center; gap: .5rem; padding-right: 1.5rem; white-space: nowrap; }
+.btn--marquee:hover, .btn--marquee:focus-visible { background: #2B50FF; }
+.btn--marquee:hover .b-mq-static, .btn--marquee:focus-visible .b-mq-static { opacity: 0; }
+.btn--marquee:hover .b-mq-run, .btn--marquee:focus-visible .b-mq-run { opacity: 1; }
+.btn--marquee:hover .b-mq-track, .btn--marquee:focus-visible .b-mq-track { animation-play-state: running; }
+@keyframes mq { to { transform: translateX(-50%); } }
+
+/* 10. flip: надпись переворачивается как грань кубика и показывает вторую */
+.b-flip { display: block; perspective: 500px; }
+.b-flip-in { display: grid; transform-style: preserve-3d; transform: translateZ(-.6em); transition: transform .6s cubic-bezier(.22, 1, .36, 1); }
+.b-face { grid-area: 1 / 1; display: flex; align-items: center; justify-content: center; gap: .5rem; height: 1.2em; backface-visibility: hidden; }
+.b-face-a { transform: translateZ(.6em); }
+.b-face-b { transform: rotateX(90deg) translateZ(.6em); }
+.btn--flip { transition: background-color .4s ease; }
+.btn--flip:hover, .btn--flip:focus-visible { background: #2B50FF; }
+.btn--flip:hover .b-flip-in, .btn--flip:focus-visible .b-flip-in { transform: translateZ(-.6em) rotateX(-90deg); }
+
+/* 11. link: минимализм, подчёркивание прорисовывается слева направо */
+.btn--link { background: transparent; color: #1B1F2A; padding: .35rem 0; border-radius: 0; overflow: visible; transition: color .3s ease; }
+.btn--link::before, .btn--link::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; }
+.btn--link::before { background: #1B1F2A; opacity: .25; }
+.btn--link::after { background: #2B50FF; transform: scaleX(0); transform-origin: right; transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.btn--link .b-arrow { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
+.btn--link:hover, .btn--link:focus-visible { color: #2B50FF; }
+.btn--link:hover::after, .btn--link:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.btn--link:hover .b-arrow, .btn--link:focus-visible .b-arrow { transform: translateY(3px); }
+
+/* 12. pulse: мягкое кольцо периодически расходится от кнопки, при наведении замирает */
+.btn--pulse { animation: ring 2.6s ease-out infinite; transition: background-color .3s ease, box-shadow .3s ease; }
+.btn--pulse:hover, .btn--pulse:focus-visible { animation: none; background: #2B50FF; box-shadow: 0 12px 26px -12px rgba(43, 80, 255, .75); }
+.btn--pulse:hover .b-arrow, .btn--pulse:focus-visible .b-arrow { animation: bob 1.1s ease-in-out infinite; }
+@keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(43, 80, 255, .5); } 70%, 100% { box-shadow: 0 0 0 14px rgba(43, 80, 255, 0); } }
+@keyframes bob { 50% { transform: translateY(3px); } }
+
+/* 13. stack: под кнопкой слои, которые разъезжаются при наведении */
+.btn--stack { box-shadow: 0 5px 0 -1px #2B50FF, 0 10px 0 -2px #9DB0FF; transition: box-shadow .35s cubic-bezier(.22, 1, .36, 1), translate .35s cubic-bezier(.22, 1, .36, 1); }
+.btn--stack:hover, .btn--stack:focus-visible { translate: 0 -3px; box-shadow: 0 8px 0 -1px #2B50FF, 0 16px 0 -2px #9DB0FF; }
+.btn--stack:active { translate: 0 2px; box-shadow: 0 2px 0 -1px #2B50FF, 0 4px 0 -2px #9DB0FF; }
+
+/* 14. glow: рамка и фон подсвечиваются в том месте, где курсор */
+.btn--glow, .btn--gchip, .btn--gpress, .btn--gaurora, .btn--gorbit, .btn--gdots, .btn--ghalo, .btn--gunder { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12); }
+.btn--glow::before, .btn--gchip::before, .btn--gpress::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(90px circle at var(--x, 50%) var(--y, 50%), #9DB0FF, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--glow::after, .btn--gchip::after, .btn--gpress::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .55), transparent 70%); }
+.btn--glow:hover::before, .btn--glow:hover::after, .btn--glow:focus-visible::before, .btn--glow:focus-visible::after,
+.btn--gchip:hover::before, .btn--gchip:hover::after, .btn--gchip:focus-visible::before, .btn--gchip:focus-visible::after,
+.btn--gpress:hover::before, .btn--gpress:hover::after, .btn--gpress:focus-visible::before, .btn--gpress:focus-visible::after { opacity: 1; }
+
+/* 15. glowghost: прозрачная кнопка, рамка и фон подсвечиваются синим там, где курсор */
+.btn--glowghost, .btn--lit, .btn--chip { background: transparent; color: #1B1F2A; box-shadow: inset 0 0 0 1.5px rgba(27, 31, 42, .18); }
+.btn--glowghost .b-arrow { transition: color .3s ease; }
+.btn--glowghost::before, .btn--lit::before, .btn--chip::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), #2B50FF, transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--glowghost::after, .btn--lit::after, .btn--chip::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .16), transparent 70%); }
+.btn--glowghost:hover::before, .btn--glowghost:hover::after, .btn--glowghost:focus-visible::before, .btn--glowghost:focus-visible::after,
+.btn--lit:hover::before, .btn--lit:hover::after, .btn--lit:focus-visible::before, .btn--lit:focus-visible::after,
+.btn--chip:hover::before, .btn--chip:hover::after, .btn--chip:focus-visible::before, .btn--chip:focus-visible::after { opacity: 1; }
+.btn--glowghost:hover .b-arrow, .btn--glowghost:focus-visible .b-arrow { color: #2B50FF; }
+
+/* 16. lineglow: тонкая линия под текстом, по которой за курсором бежит синий свет */
+.btn--lineglow { background: transparent; color: #1B1F2A; padding: .35rem 0; border-radius: 0; overflow: visible; }
+.btn--lineglow::before, .btn--lineglow::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; }
+.btn--lineglow::before { background: #1B1F2A; opacity: .2; }
+.btn--lineglow::after { opacity: 0; transition: opacity .3s ease; background: linear-gradient(90deg, transparent calc(var(--x, 50%) - 90px), #2B50FF var(--x, 50%), transparent calc(var(--x, 50%) + 90px)); }
+.btn--lineglow .b-arrow { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
+.btn--lineglow:hover::after, .btn--lineglow:focus-visible::after { opacity: 1; }
+.btn--lineglow:hover .b-arrow, .btn--lineglow:focus-visible .b-arrow { transform: translateY(3px); }
+
+/* 17. textglow: текст-ссылка, буквы синеют в радиусе курсора */
+.btn--textglow { background: transparent; color: #1B1F2A; padding: .35rem 0; border-radius: 0; overflow: visible; }
+.b-tg { color: transparent; background-image: linear-gradient(#1B1F2A, #1B1F2A); -webkit-background-clip: text; background-clip: text; }
+.btn--textglow:hover .b-tg, .btn--textglow:focus-visible .b-tg { background-image: radial-gradient(110px circle at var(--x, -300px) var(--y, 50%), #2B50FF, #1B1F2A 100%); }
+.btn--textglow .b-arrow { transition: transform .4s cubic-bezier(.22, 1, .36, 1), color .3s; }
+.btn--textglow:hover .b-arrow, .btn--textglow:focus-visible .b-arrow { color: #2B50FF; transform: translateY(3px); }
+
+/* 18. marker: подчёркивание вырастает в выделение маркером */
+.btn--marker { background: transparent; color: #1B1F2A; padding: .35rem .3rem; margin-left: -.3rem; border-radius: 4px; overflow: visible; }
+.btn--marker::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 4px; background: #2B50FF; transform: scaleY(.07); transform-origin: left bottom; transition: transform .5s cubic-bezier(.22, 1, .36, 1), background-color .5s ease; }
+.btn--marker:hover::before, .btn--marker:focus-visible::before { transform: scaleY(1); background: rgba(43, 80, 255, .2); }
+.btn--marker .b-arrow { transition: transform .4s cubic-bezier(.22, 1, .36, 1); }
+.btn--marker:hover .b-arrow, .btn--marker:focus-visible .b-arrow { transform: translateY(3px); }
+
+/* 19. reach: стрелка вытягивается вправо */
+.btn--reach { background: transparent; color: #1B1F2A; padding: .35rem 0; border-radius: 0; overflow: visible; gap: .5rem; transition: color .3s ease; }
+.b-reach { display: inline-flex; align-items: center; }
+.b-reach i { display: block; width: .55rem; height: 2px; margin-right: -.4rem; background: currentColor; border-radius: 1px; transition: width .5s cubic-bezier(.22, 1, .36, 1); }
+.btn--reach:hover, .btn--reach:focus-visible { color: #2B50FF; }
+.btn--reach:hover .b-reach i, .btn--reach:focus-visible .b-reach i { width: 1.9rem; }
+
+/* 20. tag: вокруг текста выезжают скобки <  /> как в JSX */
+.btn--tag { background: transparent; color: #1B1F2A; padding: .35rem 0; border-radius: 0; overflow: visible; gap: .35rem; transition: color .3s ease; }
+.b-tag-l, .b-tag-r { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: #2B50FF; opacity: 0; transition: transform .45s cubic-bezier(.22, 1, .36, 1), opacity .3s ease; }
+.b-tag-l { transform: translateX(.9rem); }
+.b-tag-r { transform: translateX(-.9rem); }
+.btn--tag:hover, .btn--tag:focus-visible { color: #2B50FF; }
+.btn--tag:hover .b-tag-l, .btn--tag:hover .b-tag-r, .btn--tag:focus-visible .b-tag-l, .btn--tag:focus-visible .b-tag-r { opacity: 1; transform: none; }
+
+/* 21. morph: в покое ссылка с подчёркиванием, при наведении линия вырастает в тёмную плашку с подсветкой */
+.btn--morph { background: transparent; color: #1B1F2A; transition: color .35s ease; }
+.btn--morph::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; background: #1B1F2A;
+  clip-path: inset(calc(100% - 2px - .55rem) 1.5rem .55rem 1.5rem round 0px);
+  transition: clip-path .6s cubic-bezier(.22, 1, .36, 1);
+}
+.btn--morph::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .4s ease; background: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .6), transparent 70%); }
+.btn--morph:hover, .btn--morph:focus-visible { color: #EDEFEA; }
+.btn--morph:hover::before, .btn--morph:focus-visible::before { clip-path: inset(0 0 0 0 round 9999px); }
+.btn--morph:hover::after, .btn--morph:focus-visible::after { opacity: 1; }
+
+/* Семейство Glow Ghost: контурная кнопка, подсветка следует за курсором */
+@property --o { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.btn--aurora, .btn--dots, .btn--orbit, .btn--flood, .btn--halo { background: transparent; color: #1B1F2A; box-shadow: inset 0 0 0 1.5px rgba(27, 31, 42, .18); }
+
+/* 22. aurora: подсветка двухцветная, синяя с фиолетовым */
+.btn--aurora::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(130px circle at var(--x, 50%) var(--y, 50%), #2B50FF, #8B5CF6 45%, transparent 75%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--aurora::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(150px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .16), rgba(139, 92, 246, .12) 50%, transparent 75%); }
+.btn--aurora:hover::before, .btn--aurora:hover::after, .btn--aurora:focus-visible::before, .btn--aurora:focus-visible::after { opacity: 1; }
+
+/* 23. dots: точечная сетка, как в песочнице, зажигается синим вокруг курсора */
+.btn--dots::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(100px circle at var(--x, 50%) var(--y, 50%), #2B50FF, transparent 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--dots::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease;
+  background-image: radial-gradient(circle, #2B50FF 1.3px, transparent 1.8px); background-size: 10px 10px; background-position: 5px 5px;
+  -webkit-mask-image: radial-gradient(100px circle at var(--x, 50%) var(--y, 50%), #000, transparent); mask-image: radial-gradient(100px circle at var(--x, 50%) var(--y, 50%), #000, transparent);
+}
+.btn--dots:hover::before, .btn--dots:hover::after, .btn--dots:focus-visible::before, .btn--dots:focus-visible::after { opacity: 1; }
+
+/* 24. orbit: по рамке бежит светящийся отрезок, внутри свет следует за курсором */
+.btn--orbit::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: conic-gradient(from var(--o), transparent 0 55%, rgba(43, 80, 255, .25) 75%, #2B50FF 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--orbit::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .14), transparent 70%); }
+.btn--orbit:hover::before, .btn--orbit:hover::after, .btn--orbit:focus-visible::before, .btn--orbit:focus-visible::after { opacity: 1; }
+.btn--orbit:hover::before, .btn--orbit:focus-visible::before { animation: orbit 2.4s linear infinite; }
+@keyframes orbit { to { --o: 360deg; } }
+
+/* 25. flood: контур заливается синим, поверх остаётся световое пятно под курсором */
+.btn--flood { transition: color .4s ease, box-shadow .4s ease; }
+.btn--flood::before { content: ''; position: absolute; inset: 0; z-index: -2; background: #2B50FF; opacity: 0; transition: opacity .45s ease; }
+.btn--flood::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .45s ease; background: radial-gradient(150px circle at var(--x, 50%) var(--y, 50%), rgba(255, 255, 255, .3), transparent 70%); }
+.btn--flood:hover, .btn--flood:focus-visible { color: #fff; box-shadow: inset 0 0 0 1.5px #2B50FF; }
+.btn--flood:hover::before, .btn--flood:hover::after, .btn--flood:focus-visible::before, .btn--flood:focus-visible::after { opacity: 1; }
+
+/* 26. halo: вокруг кнопки проявляется внешнее кольцо, и свет бежит по нему */
+.btn--halo { overflow: visible; }
+.btn--halo::before {
+  content: ''; position: absolute; inset: -6px; z-index: 1; border-radius: 9999px; padding: 1.5px; pointer-events: none; opacity: 0; transform: scale(.96); transition: opacity .35s ease, transform .5s cubic-bezier(.22, 1, .36, 1);
+  background: radial-gradient(140px circle at calc(var(--x, 50%) + 6px) calc(var(--y, 50%) + 6px), #2B50FF, rgba(43, 80, 255, .12) 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--halo::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; transition: opacity .3s ease; background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .14), transparent 70%); }
+.btn--halo:hover::before, .btn--halo:focus-visible::before { opacity: 1; transform: none; }
+.btn--halo:hover::after, .btn--halo:focus-visible::after { opacity: 1; }
+
+/* 27. lit: подсветка рамки плюс буквы синеют в радиусе курсора */
+.btn--lit:hover .b-tg, .btn--lit:focus-visible .b-tg { background-image: radial-gradient(110px circle at var(--x, -300px) var(--y, 50%), #2B50FF, #1B1F2A 100%); }
+.btn--lit .b-arrow { transition: color .3s ease; }
+.btn--lit:hover .b-arrow, .btn--lit:focus-visible .b-arrow { color: #2B50FF; }
+
+/* 28. chip: справа круглая кнопка со стрелкой, при наведении она заливается и стрелка разворачивается */
+.btn--chip { padding: .4rem .4rem .4rem 1.5rem; gap: 1rem; }
+.b-chip2 { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgba(27, 31, 42, .18); transition: background-color .35s ease, color .35s ease, box-shadow .35s ease; }
+.b-chip2 svg { transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.btn--chip:hover .b-chip2, .btn--chip:focus-visible .b-chip2 { background: #2B50FF; color: #fff; box-shadow: inset 0 0 0 1.5px #2B50FF; }
+.btn--chip:hover .b-chip2 svg, .btn--chip:focus-visible .b-chip2 svg { transform: rotate(-90deg); }
+
+/* Семейство Glow: тёмные primary-кнопки с подсветкой под курсором */
+/* 29. gchip: справа акцентный кружок со стрелкой, при наведении он светлеет и стрелка разворачивается */
+.btn--gchip { padding: .4rem .4rem .4rem 1.5rem; gap: 1rem; }
+.b-chip3 { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: #2B50FF; color: #fff; transition: background-color .35s ease, color .35s ease; }
+.b-chip3 svg { transition: transform .5s cubic-bezier(.22, 1, .36, 1); }
+.btn--gchip:hover .b-chip3, .btn--gchip:focus-visible .b-chip3 { background: #EDEFEA; color: #1B1F2A; }
+.btn--gchip:hover .b-chip3 svg, .btn--gchip:focus-visible .b-chip3 svg { transform: rotate(-90deg); }
+
+/* 30. gaurora: подсветка двухцветная, синяя с фиолетовым */
+.btn--gaurora::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(130px circle at var(--x, 50%) var(--y, 50%), #9DB0FF, #A78BFA 50%, transparent 78%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--gaurora::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(140px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .6), rgba(139, 92, 246, .38) 55%, transparent 78%); }
+.btn--gaurora:hover::before, .btn--gaurora:hover::after, .btn--gaurora:focus-visible::before, .btn--gaurora:focus-visible::after { opacity: 1; }
+
+/* 31. gorbit: по рамке бежит светящийся отрезок, внутри свет ведёт курсор */
+.btn--gorbit::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: conic-gradient(from var(--o), transparent 0 55%, rgba(157, 176, 255, .3) 75%, #9DB0FF 100%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--gorbit::after { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease; background: radial-gradient(120px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .45), transparent 70%); }
+.btn--gorbit:hover::before, .btn--gorbit:hover::after, .btn--gorbit:focus-visible::before, .btn--gorbit:focus-visible::after { opacity: 1; }
+.btn--gorbit:hover::before, .btn--gorbit:focus-visible::before { animation: orbit 2.4s linear infinite; }
+
+/* 32. gdots: точечная сетка зажигается вокруг курсора на тёмной плашке */
+.btn--gdots::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity .3s ease;
+  background: radial-gradient(100px circle at var(--x, 50%) var(--y, 50%), #9DB0FF, transparent 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--gdots::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity .3s ease;
+  background-image: radial-gradient(circle, #9DB0FF 1.3px, transparent 1.8px), radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .35), transparent 70%);
+  background-size: 10px 10px, 100% 100%; background-position: 5px 5px, 0 0;
+  -webkit-mask-image: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), #000, transparent); mask-image: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), #000, transparent);
+}
+.btn--gdots:hover::before, .btn--gdots:hover::after, .btn--gdots:focus-visible::before, .btn--gdots:focus-visible::after { opacity: 1; }
+
+/* 33. ghalo: вокруг тёмной плашки проявляется внешнее кольцо, свет бежит по нему */
+.btn--ghalo { overflow: visible; }
+.btn--ghalo::before {
+  content: ''; position: absolute; inset: -6px; z-index: 1; border-radius: 9999px; padding: 1.5px; pointer-events: none; opacity: 0; transform: scale(.96); transition: opacity .35s ease, transform .5s cubic-bezier(.22, 1, .36, 1);
+  background: radial-gradient(140px circle at calc(var(--x, 50%) + 6px) calc(var(--y, 50%) + 6px), #2B50FF, rgba(43, 80, 255, .14) 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.btn--ghalo::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; transition: opacity .3s ease; background: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .55), transparent 70%); }
+.btn--ghalo:hover::before, .btn--ghalo:focus-visible::before { opacity: 1; transform: none; }
+.btn--ghalo:hover::after, .btn--ghalo:focus-visible::after { opacity: 1; }
+
+/* 34. gunder: под плашкой горит синее свечение, которое идёт за курсором, кнопка слегка приподнимается */
+.btn--gunder { overflow: visible; transition: translate .35s cubic-bezier(.22, 1, .36, 1); }
+.btn--gunder::before {
+  content: ''; position: absolute; left: -24px; right: -24px; top: calc(100% - 14px); height: 30px; z-index: -1; pointer-events: none;
+  opacity: 0; transition: opacity .35s ease; filter: blur(10px);
+  background: radial-gradient(ellipse 90px 14px at calc(var(--x, 50%) + 24px) 50%, rgba(43, 80, 255, .9), transparent 100%);
+}
+.btn--gunder::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; transition: opacity .3s ease; background: radial-gradient(110px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .5), transparent 70%); }
+.btn--gunder:hover, .btn--gunder:focus-visible { translate: 0 -2px; }
+.btn--gunder:hover::before, .btn--gunder:hover::after, .btn--gunder:focus-visible::before, .btn--gunder:focus-visible::after { opacity: 1; }
+
+/* 35. gpress: при нажатии кнопка вжимается, а внутри вспыхивает свет */
+.btn--gpress { transition: scale .15s ease, translate .25s cubic-bezier(.22, 1, .36, 1); }
+.btn--gpress:hover, .btn--gpress:focus-visible { translate: 0 -1px; }
+.btn--gpress:active { scale: .97; translate: 0 1px; }
+.btn--gpress:active::after { opacity: 1; background: radial-gradient(240px circle at var(--x, 50%) var(--y, 50%), rgba(43, 80, 255, .95), transparent 75%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .btn *, .btn::before, .btn::after { animation: none !important; transition: none !important; }
+  .btn--roll:hover .b-roll-in { transform: none; }
+}

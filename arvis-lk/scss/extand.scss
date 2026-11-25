@@ -1,0 +1,13 @@
+%background{
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+@mixin after {
+    content: '';
+    display: block;
+    position: absolute;
+}
+%after {
+    @include after
+}

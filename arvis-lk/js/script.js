@@ -1,0 +1,412 @@
+document.addEventListener('DOMContentLoaded',()=>{
+    
+    const sideBar = document.querySelector('.sidebar');
+    const mainContainer = document.querySelector('.main-container');
+    function resizeContainer(){
+        let sideBarHeight = sideBar.clientHeight
+        if(window.matchMedia("(min-width: 2000px)").matches){
+            mainContainer.style.height = sideBarHeight + 150 + 'px'
+        }
+        if(window.matchMedia("(max-width: 1300px)").matches){
+            mainContainer.style.height = ""
+        }
+    }
+    if(sideBar && mainContainer){
+        window.addEventListener('resize', resizeContainer);
+        resizeContainer()
+    }
+
+    // Обработчик для всех модалок
+    const modals = document.querySelectorAll('.modal')
+    modals.forEach(element => {
+        element.addEventListener('click', event =>{
+            const target = event.target
+            if (target.closest('.cross') || target.closest('.cancel-delete') || target.classList.contains('modal') || target.closest('.main-close-btn')){
+                target.closest('.modal').classList.remove('active')
+                if(target.closest('.modal').classList.contains('multi-modal-overlay')){
+                    multiItems.forEach(item => {
+                        document.body.style.overflow = '';
+                        item.classList.remove('active')
+                    });
+                }
+                if(target.closest('.modal').classList.contains('password-modal-overlay') || 
+                    target.closest('.modal').classList.contains('delete-modal-overlay')){
+                    document.body.style.overflow = '';
+                }
+                if(target.closest('.modal').classList.contains('share-modal-overlay')){
+                    document.body.style.overflow = '';
+                    copyMessage.classList.remove('active')
+                }
+                
+            }
+        })
+    });
+
+    // Модалка для сборки мульти-объекта
+    const multiModal = document.querySelector('.multi-modal-overlay')
+    const multiItems = document.querySelectorAll('.multi-item')
+    let activeMultiItem
+    multiItems.forEach(element => {
+        element.addEventListener('click', ()=>{
+            activeMultiItem = element
+            document.body.style.overflow = 'hidden';
+            element.classList.add('active')
+            multiModal.classList.add('active')
+        })
+    });
+
+    // КолорПикер для модалки текста
+    const colorPicker = document.querySelector('.color-picker')
+    const colorText = document.querySelector('.color-text')
+    function changeColor() {
+        colorText.value = colorPicker.value 
+    }
+    if(colorPicker){
+        colorPicker.addEventListener('change', changeColor)
+    }
+    
+    // Модалки для сборки обычного объекта
+    const collectModals = document.querySelectorAll('.collect-modal')
+    const collectItems = document.querySelectorAll('.collect-item')
+    let activeTypeId
+    collectItems.forEach(element => {
+        element.addEventListener('click', ()=>{
+            let targetId = element.dataset.id
+            activeTypeId = targetId
+            collectModals.forEach(modal => {
+                if(modal.dataset.id === targetId){
+                    modal.classList.add('active')
+                }
+            });
+        })
+    });
+
+    // Всплывающие подсказки
+    const tipIcons = document.querySelectorAll('.modal-tip-icon')
+    const modalTip = document.querySelectorAll('.modal-tip')
+    const markerTips = document.querySelectorAll('.info-btn')
+    markerTips.forEach(element => {
+        element.addEventListener('click', ()=>{
+            modalTip.forEach(modal => {
+                if(modal.dataset.id === element.dataset.id){
+                    modal.classList.toggle('active')
+                }
+            });
+        })
+    });
+    tipIcons.forEach(element => {
+        element.addEventListener('click', ()=>{
+            modalTip.forEach(modal => {
+                if(modal.dataset.id === element.dataset.id){
+                    modal.classList.toggle('active')
+                }
+            });
+        })
+    });
+    const tipClose = document.querySelectorAll('.cross-tip')
+    tipClose.forEach(element => {
+        element.addEventListener('click', ()=>{
+            let tipModal = element.closest('.modal-tip')
+            tipModal.classList.remove('active')
+        })
+    });
+
+    // По нажатию на кнопку "Отменить" в модалках закрываем все модалки
+    const closeBtns = document.querySelectorAll('.close-btn')
+    closeBtns.forEach(element => {
+        element.addEventListener('click', ()=>{
+            modals.forEach(modal => {
+                modal.classList.remove('active')
+            });
+            activeMultiItem.classList.remove('active')
+            document.body.style.overflow = '';
+        })
+    });
+
+    // Иконки типов, которые вставляются в пунктирные квадраты
+    let collectTypes = [
+        // Text
+        `
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M33.6001 126.401H129.6V30.4009H33.6001V126.401ZM40.0001 36.8009H123.2V120.001H40.0001V36.8009Z" fill="white"/>
+            <path d="M52.7993 62.4001H59.1993V56.0001H75.1993V100.8H68.7993V107.2H94.3993V100.8H87.9993V56.0001H103.999V62.4001H110.399V49.6001H52.7993V62.4001Z" fill="white"/>
+        </svg>
+        `,
+        // Image
+        `
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M124.399 124.399V35.5991H35.5991V124.399H124.399ZM62.7324 87.3991L75.0658 102.248L92.3324 79.9991L114.532 109.599H45.4658L62.7324 87.3991Z" fill="white"/>
+        </svg>
+        `,
+        // Video
+        `
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M40.3194 35.3596H119.679C122.407 35.3596 124.639 37.5916 124.639 40.3196V119.68L35.3594 119.58V40.3196C35.3594 37.5916 37.5914 35.3596 40.3194 35.3596ZM60.1594 40.3196L50.2394 55.1996H55.1994L65.1194 40.3196H60.1594ZM79.9994 40.3196H75.0394L65.1194 55.1996H70.0794L79.9994 40.3196ZM94.8794 40.3196H89.9194L79.9994 55.1996H84.9594L94.8794 40.3196ZM109.759 40.3196H104.799L94.8794 55.1996H99.8394L109.759 40.3196ZM114.719 109.76V60.1596H45.2794V109.76H114.719ZM70.0794 65.1196L99.8394 84.9596L70.0794 104.8V65.1196Z" fill="white"/>
+        </svg>
+        `,
+        // GIF
+        `
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M98.6667 33.3333L122 56.6666V121.967C122.004 122.58 121.888 123.188 121.657 123.756C121.427 124.323 121.087 124.84 120.656 125.277C120.226 125.713 119.714 126.06 119.149 126.299C118.585 126.537 117.979 126.662 117.366 126.667H42.634C41.4084 126.658 40.2354 126.168 39.3683 125.302C38.5013 124.435 38.0098 123.263 38 122.037V37.9626C38 35.4053 40.086 33.3333 42.662 33.3333H98.6667ZM94 42.6666H47.3333V117.333H112.667V61.3333H94V42.6666ZM84.6667 70.6666V93.9999H80V70.6666H84.6667ZM75.3333 70.6666V75.3333H66C64.7623 75.3333 63.5753 75.8249 62.7002 76.7001C61.825 77.5753 61.3333 78.7622 61.3333 79.9999V84.6666C61.3333 85.9043 61.825 87.0913 62.7002 87.9664C63.5753 88.8416 64.7623 89.3333 66 89.3333H70.6667V84.6666H66V79.9999H75.3333V89.3333C75.3333 90.5709 74.8417 91.7579 73.9665 92.6331C73.0913 93.5083 71.9043 93.9999 70.6667 93.9999H66C63.5246 93.9999 61.1507 93.0166 59.4003 91.2663C57.65 89.5159 56.6667 87.1419 56.6667 84.6666V79.9999C56.6667 77.5246 57.65 75.1506 59.4003 73.4003C61.1507 71.6499 63.5246 70.6666 66 70.6666H75.3333ZM103.333 70.6666V75.3333H94V79.9999H103.333V84.6666H94V93.9999H89.3333V70.6666H103.333Z" fill="white"/>
+        </svg>
+        `,
+        // PDF
+        `
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M109.6 125.066H53.6004C51.1251 125.066 48.7511 124.083 47.0008 122.333C45.2504 120.582 44.2671 118.208 44.2671 115.733V41.0664C44.2671 38.5911 45.2504 36.2171 47.0008 34.4668C48.7511 32.7164 51.1251 31.7331 53.6004 31.7331H86.2671C86.3089 31.7276 86.3513 31.7276 86.3931 31.7331H86.4211C86.4651 31.7469 86.5105 31.7563 86.5564 31.7611C86.9671 31.7891 87.3731 31.8684 87.7651 31.9991H87.9611C88.0472 32.0594 88.1283 32.1265 88.2037 32.1998C88.7121 32.4258 89.1753 32.7421 89.5711 33.1331L117.571 61.1331C117.962 61.5288 118.278 61.992 118.504 62.5004C118.545 62.6014 118.581 62.7041 118.612 62.8084L118.658 62.9391C118.789 63.3264 118.864 63.7324 118.887 64.1431C118.891 64.1896 118.902 64.2352 118.92 64.2784V64.3064C118.927 64.3371 118.932 64.3683 118.934 64.3998V115.733C118.934 118.208 117.95 120.582 116.2 122.333C114.45 124.083 112.076 125.066 109.6 125.066ZM92.9124 87.7331V111.066H97.2991V101.546H104.112V97.6358H97.2991V91.6578H104.934V87.7331H92.9124ZM75.6457 87.7331V111.066H81.2737C83.6351 111.183 85.9217 110.222 87.4897 108.453C89.0993 106.399 89.9055 103.83 89.7577 101.224V97.4444C89.8663 94.8667 89.0374 92.3368 87.4244 90.3231C85.9077 88.5964 83.6911 87.6444 81.3904 87.7331H75.6457ZM58.2671 87.7331V111.066H62.6537V102.858H65.5751C67.5257 102.965 69.4297 102.242 70.8204 100.87C72.1457 99.3858 72.8317 97.4444 72.7337 95.4564C72.8204 93.4228 72.1334 91.4319 70.8111 89.8844C70.1651 89.1681 69.3686 88.6037 68.4786 88.2317C67.5886 87.8598 66.6273 87.6895 65.6637 87.7331H58.2671ZM86.2671 41.0664V64.3998H109.6L86.2671 41.0664ZM81.3484 107.156H80.0324V91.6578H81.6284C82.1861 91.6249 82.7432 91.7324 83.2487 91.9705C83.7542 92.2085 84.1919 92.5695 84.5217 93.0204C85.2077 94.4344 85.5017 96.0071 85.3711 97.5751V101.63C85.4737 103.124 85.1517 104.617 84.4377 105.928C84.061 106.368 83.5829 106.71 83.0446 106.924C82.5064 107.137 81.9243 107.217 81.3484 107.156ZM65.6637 98.9331H62.6491V91.6578H65.7057C66.0811 91.6618 66.4493 91.7612 66.7758 91.9465C67.1023 92.1317 67.3764 92.3969 67.5724 92.7171C68.0764 93.5524 68.3191 94.5138 68.2724 95.4891C68.3309 96.3967 68.0899 97.2984 67.5864 98.0558C67.3576 98.343 67.0642 98.5721 66.7301 98.7246C66.396 98.877 66.0307 98.9485 65.6637 98.9331Z" fill="white"/>
+        </svg>
+        `,
+        // Audio
+        `
+        <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M94.7999 50.5081C100.739 52.9103 105.825 57.0327 109.404 62.3461C112.984 67.6596 114.893 73.9215 114.888 80.3281C114.893 86.7344 112.983 92.9959 109.404 98.309C105.825 103.622 100.739 107.744 94.7999 110.146V116.854C102.487 114.322 109.178 109.428 113.919 102.869C118.659 96.3097 121.208 88.4211 121.2 80.3281C121.2 63.2905 110.138 48.8281 94.7999 43.7809V50.5081ZM94.7999 66.3457C96.8211 68.0717 98.443 70.2162 99.5536 72.6309C100.664 75.0455 101.237 77.6727 101.232 80.3305C101.237 82.988 100.665 85.6149 99.554 88.0292C98.4434 90.4436 96.8212 92.5876 94.7999 94.3129V101.139C101.976 96.9841 106.8 89.2201 106.8 80.3305C106.802 76.1141 105.694 71.9716 103.587 68.3191C101.481 64.6666 98.4502 61.6328 94.7999 59.5225V66.3457ZM39.5999 99.5497H58.7999L80.3999 125.986C82.7999 129.442 88.4159 129.18 89.9999 125.261V35.5921C88.0535 31.6753 82.9463 31.3609 80.3999 34.6753L58.7999 61.2025H39.5999C33.4535 61.2025 32.3999 62.3089 32.3999 68.3161V92.3449C32.3999 98.2057 33.5999 99.5497 39.5999 99.5497Z" fill="white"/>
+        </svg>
+        `,
+        // Button
+        `
+        <svg class="collect-svg" width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="160" height="160" rx="20" fill="#555555"/>
+            <path d="M84.0967 114.854L85.1274 116.208L86.6551 115.458L135.886 91.2802L137.393 90.54L136.979 88.9128L134.978 81.0503L145.304 85.8574C147.928 87.2188 147.918 90.4858 145.274 91.8328L94.1791 117.868C87.035 121.508 78.2984 121.508 71.1543 117.868L20.0591 91.8328C17.4056 90.4807 17.4056 87.1941 20.059 85.8421L50.2931 70.4364L84.0967 114.854Z" stroke="white" stroke-width="4.13793"/>
+            <path d="M71.9424 110.488L32.1471 89.8375L31.1145 85.3956L33.5769 73.4726L40.0903 58.5105L78.5352 78.2262H80.0444L83.6188 78.6938C83.3541 83.0058 83.9524 112.218 84.016 112.592L79.409 112.125L71.9424 110.488Z" fill="white"/>
+            <path d="M38.4421 54.2695L30.5415 78.5195C29.1128 82.4652 27.1057 90.1185 32.4485 92.4266L70.7648 111.201C78.335 114.471 86.9636 114.471 94.5339 111.201L132.85 92.4266C137.95 88.8771 135.177 83.5339 134.252 79.5881L127.108 55.1738L125.091 58.2975L132.067 82.4652C132.85 85.0957 133.496 87.9729 131.424 89.2684L93.1077 108.043C86.4459 110.92 78.8528 110.92 72.1909 108.043L33.8747 89.2684C31.3368 88.1721 32.028 84.2737 32.9788 80.8212L40.2067 58.8729L38.4421 54.2695Z" fill="white"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M70.8175 38.2784L42.9742 53.5601C40.9305 54.6818 40.9305 57.5677 42.9742 58.6894L70.8175 73.9711C78.1798 78.0119 87.1522 78.0119 94.5145 73.9711L122.358 58.6894C124.401 57.5677 124.402 54.6818 122.358 53.5601L94.5145 38.2784C87.1522 34.2377 78.1798 34.2377 70.8175 38.2784ZM41.3585 50.7255C37.0559 53.087 37.056 59.1625 41.3585 61.524L69.2018 76.8057C77.5681 81.3975 87.764 81.3975 96.1302 76.8056L123.973 61.524C128.276 59.1625 128.276 53.087 123.973 50.7255L96.1302 35.4439C87.764 30.852 77.568 30.8521 69.2018 35.4439L41.3585 50.7255Z" fill="white"/>
+        </svg>
+        `,
+         // Slides
+         `
+         <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <rect width="160" height="160" rx="20" fill="#555555"/>
+             <path d="M128.07 40.772V53.991C128.07 53.991 119.272 54.0352 119.228 53.991V40.772H105.965C105.965 40.772 106.009 31.9741 105.965 31.9299H119.228V18.6667H128.07V31.9299H141.333V40.772H128.07ZM114.807 58.4562V45.1931H101.544V31.9299H57.3335V102.667H128.07V58.4562H114.807ZM66.1756 93.8246L79.4388 76.1404L88.2809 89.4036L101.544 71.7194L119.228 93.8246H66.1756Z" fill="white"/>
+             <path d="M43.3335 46.6667V116.667H113.333V107.917H52.0835V46.6667H43.3335Z" fill="white"/>
+             <path d="M29.3335 60.6667V130.667H99.3335V121.917H38.0835V60.6667H29.3335Z" fill="white"/>
+         </svg>
+         `,
+    ]
+
+    // Заполняем пунктирный квадрат выбранным типом объекта по нажатию на кнопку "Добавить" в модалке
+    const doneBtns = document.querySelectorAll('.action-btn')
+    doneBtns.forEach(element => {
+        element.addEventListener('click', ()=>{
+            modals.forEach(modal => {
+                modal.classList.remove('active')
+            });
+            activeMultiItem.classList.add('filled')
+            activeMultiItem.innerHTML = collectTypes[activeTypeId]
+            document.body.style.overflow = '';
+        })
+    });
+
+    // Выбор иконки в модалке кнопки
+    let activeNewBtn
+    const newBtns = document.querySelectorAll('.m-btn-new')
+    const iconModal = document.querySelector('.icon-modal-overlay')
+    newBtns.forEach(element => {
+        element.addEventListener('click', ()=>{
+            activeNewBtn = element
+            iconModal.classList.add('active')
+        })
+    });
+    const iconAction = document.querySelector('.icon-action-btn')
+    if(iconAction){
+        iconAction.addEventListener('click', ()=>{
+            iconModal.classList.remove('active')
+            activeNewBtn.classList.add('filled')
+            activeNewBtn.innerHTML = 
+            `
+            <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="44" height="44" rx="5" fill="#555555"/>
+                <path d="M13.3955 21.2748L21.1222 31.4276C20.8218 31.3368 20.5291 31.2199 20.2483 31.0768L7.2035 24.4299L13.3955 21.2748Z" stroke="white" stroke-width="4.13793"/>
+                <path d="M19.7843 30.3842L8.84061 24.7052L8.55664 23.4837L9.2338 20.2049L11.025 16.0903L21.5973 21.5122H22.0124L22.9953 21.6407C22.9225 22.8265 23.0871 30.86 23.1046 30.9628L21.8376 30.8343L19.7843 30.3842Z" fill="white"/>
+                <path d="M10.5717 14.9238L8.39902 21.5926C8.00613 22.6776 7.45419 24.7823 8.92345 25.417L19.4604 30.5799C21.5422 31.4793 23.9151 31.4793 25.9969 30.5799L36.5339 25.417C37.9365 24.4409 37.1737 22.9715 36.9195 21.8864L34.9549 15.1725L34.4002 16.0315L36.3186 22.6776C36.5339 23.401 36.7115 24.1922 36.1417 24.5485L25.6047 29.7114C23.7727 30.5028 21.6846 30.5028 19.8526 29.7114L9.31564 24.5485C8.61774 24.247 8.80781 23.175 9.06927 22.2255L11.0569 16.1898L10.5717 14.9238Z" fill="white"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.4749 10.5264L11.818 14.7288C11.256 15.0373 11.256 15.8309 11.8181 16.1394L19.4749 20.3419C21.4996 21.4531 23.967 21.4531 25.9916 20.3418L33.6485 16.1394C34.2106 15.8309 34.2106 15.0373 33.6485 14.7288L25.9916 10.5264C23.967 9.41516 21.4996 9.41516 19.4749 10.5264ZM11.3737 13.9493C10.1905 14.5987 10.1905 16.2695 11.3737 16.9189L19.0306 21.1214C21.3314 22.3841 24.1352 22.3841 26.436 21.1214L34.0929 16.9189C35.2761 16.2695 35.2761 14.5987 34.0928 13.9493L26.436 9.74686C24.1352 8.48412 21.3314 8.48412 19.0306 9.74687L11.3737 13.9493Z" fill="white"/>
+            </svg>
+            `
+        })
+    }
+    
+    // Модалка Видео после загрузки виджео на сервер и нажатия кнопки "Добавить"
+    const firstVideoBtn = document.querySelectorAll('.video-first-btn')
+    const videoSettingModal = document.querySelector('.video2-modal-overlay')
+    firstVideoBtn.forEach(element => {
+        element.addEventListener('click', ()=>{
+            videoSettingModal.classList.add('active')
+        })
+    });
+
+    // Ползунок для выбора масштаба относительно маркера
+    function stepSliderInit(stepSlider){
+        // Docs - https://refreshless.com/nouislider/
+        noUiSlider.create(stepSlider, {
+            start: [1],
+            step: 1,
+            range: {
+                'min': [0],
+                'max': [3]
+            }
+        });
+        const modal = stepSlider.closest('.modal')
+        const sliderValues = modal.querySelectorAll('.scale-value')
+        stepSlider.noUiSlider.on('update', function (values, handle) {
+            // Получение значения слайдера
+            // console.log(parseInt(stepSlider.noUiSlider.get()));
+            sliderValues.forEach(element => {
+                element.classList.remove('active')
+            })
+            sliderValues.forEach(element => {
+                if(parseInt(element.dataset.id) === parseInt(values[handle])){
+                    element.classList.add('active')
+                }
+            })
+        })
+        const scaleSetBtn = modal.querySelector('.scale-micro-btn')
+        scaleSetBtn.addEventListener('click', ()=>{
+            stepSlider.noUiSlider.set(1);
+        })
+    }
+
+    // Инициализация ползунков
+    if ((typeof(noUiSlider) !== "undefined")){
+        let stepSliderText = document.getElementById('scale-slider-text');
+        let stepSliderVideo = document.getElementById('scale-slider-video');
+        let stepSliderImage = document.getElementById('scale-slider-image');
+        let stepSliderPdf = document.getElementById('scale-slider-pdf');
+        let stepSliderGif = document.getElementById('scale-slider-gif');
+        let stepSliderSlide = document.getElementById('scale-slider-slide');
+        let stepSliderAudio = document.getElementById('scale-slider-audio');
+        let stepSliderButton = document.getElementById('scale-slider-button');
+        stepSliderInit(stepSliderText)
+        stepSliderInit(stepSliderVideo)
+        stepSliderInit(stepSliderImage)
+        stepSliderInit(stepSliderPdf)
+        stepSliderInit(stepSliderGif)
+        stepSliderInit(stepSliderSlide)
+        stepSliderInit(stepSliderAudio)
+        stepSliderInit(stepSliderButton)
+    }
+     // Чтобы получить значение слайдера
+    // console.log(parseInt(Имяслайдера.noUiSlider.get()));
+    
+    // Модалка кадрирования Видео
+    const videoSecondBtn = document.querySelector('.video-cadr-btn')
+    const cadrModal = document.querySelector('.video3-modal-overlay')
+    if(videoSecondBtn){
+        videoSecondBtn.addEventListener('click', event=>{
+            event.preventDefault()
+            cadrModal.classList.add('active')
+        })
+    }
+
+    // Модалка вставки ссылки
+    const modalLinkBtns = document.querySelectorAll('.modal-link')
+    const linkModals = document.querySelectorAll('.link-modal-overlay')
+    modalLinkBtns.forEach(element => {
+        element.addEventListener('click', event=>{
+            event.preventDefault()
+            linkModals.forEach(modal => {
+                if(element.dataset.link === modal.dataset.link){
+                    modal.classList.add('active')
+                }
+            });
+        })
+    });
+
+    // Бургер-меню на мобилке
+    const hamMenu = document.querySelector('.ham-menu')
+    const mobileMenu = document.querySelector('.mobile-menu')
+    const mobileCross = document.querySelector('.mobile-cross')
+    hamMenu.addEventListener('click', ()=>{
+        hamMenu.classList.toggle('active')
+        mobileMenu.classList.add('active')
+    })
+    mobileCross.addEventListener('click', ()=>{
+        mobileMenu.classList.remove('active')
+        hamMenu.classList.toggle('active')
+    })
+
+    // Показать/скрыть пароль
+    const passwordIcons = document.querySelectorAll('.input-icon')
+    passwordIcons.forEach(element => {
+        element.addEventListener('click', ()=>{
+            let parent = element.closest('.input-slot')
+            let input = parent.querySelector('input')
+            if(input.type === 'text'){
+                input.type = 'password'
+            }else{
+                input.type = 'text'
+            }
+           
+        })
+    });
+
+    // Выбор цены на странице Тарифы
+    const greySelect = document.querySelectorAll('.grey-select')
+    greySelect.forEach(element => {
+        element.addEventListener('click', ()=>{
+            greySelect.forEach(el => {
+                el.classList.remove('active')
+            });
+            element.classList.add('active')
+        })
+    });
+
+    // Модалка "Изменить пароль"
+    const changePasswordBtn = document.querySelector('.pass-btn')
+    const changePassModal = document.querySelector('.password-modal-overlay')
+    if(changePasswordBtn){
+        changePasswordBtn.addEventListener('click', ()=>{
+            changePassModal.classList.add('active')
+            document.body.style.overflow = 'hidden';
+        })
+    }
+
+    // Модалка "Поделиться маркером"
+    const shareBtn = document.querySelectorAll('.share-btn')
+    const shareModal = document.querySelector('.share-modal-overlay')
+    if(shareBtn){
+    shareBtn.forEach(element => {
+        element.addEventListener('click', event=>{
+            event.preventDefault()
+            shareModal.classList.add('active')
+            document.body.style.overflow = 'hidden';
+        })
+    });
+   }
+
+   // Кнопка "Скопировать в буфер"
+   const copyBtn = document.querySelector('.copy-icon')
+   const copyInput = document.querySelector('.copylink-input')
+   const copyMessage = document.querySelector('.success-msg')
+   if (copyInput){
+        copyBtn.addEventListener('click', ()=>{
+            navigator.clipboard.writeText(copyInput.value)
+            .then(() => {
+                copyMessage.classList.add('active')
+            })
+            .catch(err => {
+                copyMessage.classList.add('active')
+                copyMessage.innerHTML = 'Что-то пошло не так'
+            });
+    })
+   }
+
+   // Кнопка удаления
+   const deleteBtn = document.querySelectorAll('.bin-icon')
+   const deleteModal = document.querySelector('.delete-modal-overlay')
+   if(deleteBtn){
+    deleteBtn.forEach(element => {
+        element.addEventListener('click', event=>{
+             event.preventDefault()
+             deleteModal.classList.add('active')
+             document.body.style.overflow = 'hidden';
+        })
+    });
+   }
+   
+   
+})

@@ -1,11 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Hi</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Рустем Галимов — Frontend-разработчик</title>
+  <meta name="description" content="Портфолио frontend-разработчика: React, Next.js, Vue, React Native.">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#EDEFEA">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { paper: '#EDEFEA', ink: '#1B1F2A', accent: '#2B50FF', line: '#C9CEC4', muted: '#5B6170' },
+          fontFamily: { display: ['Unbounded', 'sans-serif'], sans: ['Onest', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("js")</script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="buttons.css">
 </head>
-<body>
-	<h1>Hellooo!!</h1>
+<body class="bg-paper text-ink font-sans antialiased">
+
+  <div id="progress" class="fixed inset-x-0 top-0 z-50 h-1 origin-left bg-accent" style="transform:scaleX(0)"></div>
+
+  <header class="mx-auto flex max-w-6xl items-center justify-between px-5 py-6">
+    <a href="#top" class="font-display text-sm font-bold">RG</a>
+    <nav class="flex gap-6 text-sm font-medium">
+      <a href="#projects" class="duration-200 hover:text-accent">Проекты</a>
+      <a href="#about" class="duration-200 hover:text-accent">Обо мне</a>
+      <a href="#contacts" class="duration-200 hover:text-accent">Контакты</a>
+    </nav>
+  </header>
+
+  <main id="top" class="mx-auto max-w-6xl px-5">
+
+    <!-- Hero -->
+    <section id="hero" class="relative pb-20 pt-10 md:pb-24 md:pt-16">
+      <div class="grid items-center gap-12 md:grid-cols-[1.1fr_1fr]">
+        <div class="min-w-0">
+          <h1 id="hero-title" aria-label="Рустем Галимов" class="font-display text-[clamp(2.5rem,7vw,6rem)] font-bold leading-[0.95] tracking-tight">
+            <span class="split block" aria-hidden="true">Рустем</span>
+            <span class="split block" aria-hidden="true">Галимов</span>
+          </h1>
+          <p data-reveal data-hero class="mt-8 max-w-xl text-lg leading-relaxed text-muted md:text-xl">
+            Frontend-разработчик. Спроектировал фронтенд с нуля в нескольких продуктах и довёл их до продакшена — от сайта сети ресторанов до внутренних платформ Wildberries.
+          </p>
+          <a id="cta" data-reveal data-hero href="#projects" class="js-btn btn mt-8" data-variant="gaurora" data-label="Смотреть проекты">Смотреть проекты</a>
+        </div>
+
+        <div id="sandbox-col" class="min-w-0">
+          <div class="mb-3 flex items-center justify-between gap-4 text-xs text-muted">
+            <span>Потрогай: перетаскивай, бросай, нажимай</span>
+            <button id="sandbox-reset" type="button" class="rounded-full border border-line px-3 py-1 font-medium duration-200 hover:border-accent hover:text-accent">Бросить заново</button>
+          </div>
+          <div id="sandbox" class="sandbox" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="border-t border-line py-16">
+      <h2 data-reveal class="font-display text-3xl font-bold">Проекты</h2>
+      <div id="sections"></div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="border-t border-line py-16">
+      <h2 data-reveal class="font-display text-3xl font-bold">Обо мне</h2>
+      <div class="mt-8 grid gap-10 md:grid-cols-2">
+        <p data-reveal class="max-w-prose text-lg leading-relaxed">
+          Более 5 лет в коммерческой разработке. Отвечал за фронтенд с нуля в трёх ключевых продуктах: платформа A/B-тестирования Wildberries, инструмент управления тарифами для руководителей складов и экосистема онлайн-встреч cmeet.ai, выросшая до 2000+ активных пользователей. Для cmeet.ai выпустил мобильные приложения на React Native — в App Store, Google Play и RuStore.
+          <br><br>
+          Вне кода — технические интервью и code review, менторинг 8 разработчиков, воркшопы по визуализации данных для 50+ сотрудников. Настраиваю CI/CD и Docker, для личных проектов пишу бэкенд на NestJS и PostgreSQL.
+          <br><br>
+          В свободное время учу французский и подтягиваю английский до C1. Если спросите «Ça va?» — не растеряюсь :)
+        </p>
+        <ul id="stack" class="flex flex-wrap content-start gap-2"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Contacts -->
+  <footer id="contacts" class="border-t border-line">
+    <div class="mx-auto max-w-6xl px-5 py-16">
+      <h2 data-reveal class="font-display text-3xl font-bold">Связаться</h2>
+      <p class="mt-4 max-w-md text-muted">Пишите, если есть проект или вакансия.</p>
+      <ul data-reveal class="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-lg font-medium">
+        <li class="copy-li relative">
+          <button type="button" id="copy-email" data-email="galim691@mail.ru" class="underline decoration-line underline-offset-4 duration-200 hover:text-accent" aria-label="Скопировать почту galim691@mail.ru">galim691@mail.ru</button>
+          <span class="copy-tip" data-hint aria-hidden="true">Скопировать почту</span>
+          <span class="copy-tip" role="status" aria-live="polite"></span>
+        </li>
+        <li><a target="_blank" class="underline decoration-line underline-offset-4 hover:text-accent" href="https://t.me/Maizererr">Telegram</a></li>
+        <li><a target="_blank" class="underline decoration-line underline-offset-4 hover:text-accent" href="https://github.com/Maizerer">GitHub</a></li>
+        <li><a target="_blank" class="underline decoration-line underline-offset-4 hover:text-accent" href="https://hh.ru/resume/d53af46aff075283920039ed1f64687a447930">hh.ru</a></li>
+      </ul>
+      <p class="mt-12 text-sm text-muted">© <span id="year"></span> Рустем Галимов</p>
+    </div>
+  </footer>
+
+  <dialog id="project-dialog" class="proj-dialog"></dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.18.2/dist/motion.js"></script>
+  <script src="script.js"></script>
+  <script src="animations.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+  <script src="sandbox.js"></script>
+  <script src="buttons.js"></script>
 </body>
 </html>

@@ -1,0 +1,214 @@
+/* Мелкие правки поверх Tailwind */
+html { scroll-behavior: smooth; }
+
+:focus-visible {
+  outline: 2px solid #2B50FF;
+  outline-offset: 3px;
+}
+
+.project-card { transition: border-color .2s ease; }
+.project-card:hover { border-color: #2B50FF; }
+
+/* Скрываем до начала анимации. Класс "js" ставится только если анимации разрешены */
+.js [data-reveal] { opacity: 0; }
+.js .split { opacity: 0; }
+.char-wrap { display: inline-block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; vertical-align: bottom; }
+.char { display: inline-block; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+/* Галерея проекта */
+.gallery-track { scrollbar-width: none; scroll-behavior: smooth; overscroll-behavior-x: contain; cursor: grab; }
+.gallery-track::-webkit-scrollbar { display: none; }
+.gallery-track.is-dragging { scroll-snap-type: none; scroll-behavior: auto; cursor: grabbing; user-select: none; }
+.gallery-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 2rem; height: 2rem; border-radius: 9999px;
+  background: rgba(237, 239, 234, .9); color: #1B1F2A;
+  font-size: 1.25rem; line-height: 1; padding-bottom: 2px;
+  transition: opacity .2s ease, background-color .2s ease;
+}
+.gallery-btn:hover:not(:disabled) { background: #fff; }
+.gallery-btn:disabled { opacity: 0; pointer-events: none; }
+.gallery-dot {
+  width: .5rem; height: .5rem; border-radius: 9999px;
+  background: rgba(237, 239, 234, .6); border: 1px solid rgba(27, 31, 42, .3);
+  transition: width .25s ease, background-color .25s ease;
+}
+.gallery-dot.is-active { width: 1.25rem; background: #EDEFEA; }
+
+/* Лента скриншотов мобильных приложений (экран 9:16 показывается целиком) */
+.strip-cover { height: 20.5rem; }
+.strip-track {
+  display: flex; align-items: center; gap: .75rem; height: 100%;
+  overflow-x: auto; overflow-y: hidden;
+  padding: 0 1rem; scroll-snap-type: x mandatory; scroll-padding-inline: 1rem;
+}
+/* Если телефонов мало, они стоят по центру; если много, лента начинается слева */
+.strip-track > :first-child { margin-left: auto; }
+.strip-track > :last-child { margin-right: auto; }
+/* Тонкая тёмная рамка, белый экран. Сверху полоса 1.5rem с «островком» (динамиком),
+   под ней скриншот 9rem x 16rem (9:16) без обрезки */
+.phone {
+  position: relative; flex: none; box-sizing: border-box; overflow: hidden;
+  width: 9.7rem; height: 18.2rem; padding-top: 1.5rem;
+  background: #fff; border: .35rem solid #1B1F2A; border-radius: 1.6rem;
+  scroll-snap-align: start;
+  box-shadow: 0 12px 24px -10px rgba(27, 31, 42, .4);
+}
+.phone img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.phone::after {
+  content: ''; position: absolute; top: .45rem; left: 50%; width: 2.8rem; height: .8rem; margin-left: -1.4rem;
+  border-radius: 9999px; background: #1B1F2A;
+}
+
+/* Песочница из UI-элементов (физика в sandbox.js) */
+.sandbox {
+  position: relative; overflow: hidden; height: 22rem;
+  border: 1px dashed #C9CEC4; border-radius: 1.5rem;
+  background-image: radial-gradient(#C9CEC4 1px, transparent 1px); background-size: 22px 22px;
+  animation: sbFade 1s ease .3s both;
+}
+@media (min-width: 768px) { .sandbox { height: 32rem; } }
+@keyframes sbFade { from { opacity: 0; } to { opacity: 1; } }
+
+.sb-item { cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none; font-size: .9rem; font-weight: 500; line-height: 1; white-space: nowrap; }
+.sb-item.dragging { cursor: grabbing; z-index: 2; }
+.sb-tag, .sb-badge, .sb-btn { padding: .65rem 1.1rem; border-radius: 9999px; box-shadow: 0 6px 14px -8px rgba(27, 31, 42, .35); }
+.sb-tag { background: #fff; border: 1px solid #C9CEC4; }
+.sb-badge { background: #2B50FF; color: #EDEFEA; }
+.sb-btn { background: #1B1F2A; color: #EDEFEA; font-weight: 600; font-size: .875rem; padding: .8rem 1.4rem; }
+.sb-toggle { width: 3.5rem; height: 2rem; border-radius: 9999px; background: #C9CEC4; transition: background-color .2s; }
+.sb-toggle::after { content: ''; position: absolute; top: .25rem; left: .25rem; width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.2); transition: transform .2s; }
+.sb-toggle.on { background: #2B50FF; }
+.sb-toggle.on::after { transform: translateX(1.5rem); }
+.sb-check { width: 2.25rem; height: 2.25rem; border-radius: .65rem; background: #fff; border: 2px solid #1B1F2A; transition: background-color .15s, border-color .15s; }
+.sb-check::after { content: ''; position: absolute; left: .7rem; top: .3rem; width: .5rem; height: .95rem; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg) scale(0); transition: transform .15s; }
+.sb-check.on { background: #2B50FF; border-color: #2B50FF; }
+.sb-check.on::after { transform: rotate(45deg) scale(1); }
+.sb-slider { width: 9.5rem; height: 1.75rem; --v: 40; }
+.sb-slider::before { content: ''; position: absolute; left: 0; right: 0; top: .75rem; height: .25rem; border-radius: 9999px; background: #C9CEC4; }
+.sb-slider i { position: absolute; left: 0; top: .75rem; height: .25rem; width: calc(var(--v) * 1%); border-radius: 9999px; background: #2B50FF; transition: width .25s; }
+.sb-slider b { position: absolute; top: .25rem; left: calc(var(--v) * 1% - .625rem); width: 1.25rem; height: 1.25rem; border-radius: 9999px; background: #fff; border: 2px solid #2B50FF; box-shadow: 0 2px 4px rgba(0,0,0,.15); transition: left .25s; }
+.sb-card { width: 9.5rem; height: 5.75rem; padding: .8rem; border-radius: .9rem; background: #fff; border: 1px solid #C9CEC4; box-shadow: 0 8px 18px -10px rgba(27, 31, 42, .35); }
+.sb-card b { display: block; width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: #2B50FF; margin-bottom: .6rem; }
+.sb-card u { display: block; height: .4rem; border-radius: 9999px; background: #C9CEC4; margin-top: .4rem; text-decoration: none; }
+.sb-card u + u { width: 60%; }
+.sb-code { width: 3.25rem; height: 3.25rem; border-radius: .9rem; background: #1B1F2A; color: #EDEFEA; display: flex; align-items: center; justify-content: center; font-family: ui-monospace, monospace; font-weight: 700; }
+
+/* ===== Блок «Проекты»: секции, ряды, карточки, окно ===== */
+.proj-sec { margin-top: 3.5rem; }
+.proj-sec:first-of-type { margin-top: 2.5rem; }
+.proj-note { margin-top: 1rem; max-width: 42rem; padding-left: .75rem; border-left: 3px solid #2B50FF; font-size: .875rem; color: #5B6170; }
+
+.rail {
+  display: flex; gap: 1.25rem; margin: 1.75rem -1.25rem 0; padding: 0 1.25rem .8rem;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 1.25rem;
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail-btn {
+  width: 2.2rem; height: 2.2rem; border-radius: 9999px; border: 1px solid #C9CEC4;
+  font-size: 1.1rem; line-height: 1; padding-bottom: 2px; transition: border-color .2s, color .2s, opacity .2s;
+}
+.rail-btn:hover:not(:disabled) { border-color: #2B50FF; color: #2B50FF; }
+.rail-btn:disabled { opacity: .35; cursor: default; }
+
+.pc {
+  flex: none; width: min(20rem, 78vw); scroll-snap-align: start; text-align: left;
+  display: flex; flex-direction: column; overflow: hidden; cursor: pointer;
+  border: 1px solid #C9CEC4; border-radius: .9rem; background: rgba(255, 255, 255, .5);
+}
+.pc-cover { display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 9; overflow: hidden; background: rgba(201, 206, 196, .6); }
+.pc-cover img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.pc-body { display: flex; flex: 1; flex-direction: column; gap: .55rem; padding: 1.1rem 1.2rem 1.2rem; }
+.pc-meta { font-size: .78rem; color: #5B6170; }
+.pc-title { font-size: 1.08rem; font-weight: 600; line-height: 1.3; }
+.pc-tagline { font-size: .92rem; line-height: 1.45; color: #5B6170; }
+.pc-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.pc-chip { border: 1px solid #C9CEC4; border-radius: 9999px; padding: .15rem .7rem; font-size: .74rem; }
+.pc-chip-status { background: #2B50FF; border-color: #2B50FF; color: #EDEFEA; }
+.pc-chip-nda { border-color: #1B1F2A; font-weight: 600; }
+.pc-more { margin-top: auto; padding-top: .5rem; font-size: .85rem; font-weight: 600; color: #2B50FF; }
+
+.proj-count { margin-left: .6rem; font-family: Onest, system-ui, sans-serif; font-size: .9rem; font-weight: 500; color: #5B6170; vertical-align: .3em; }
+.pc-mobile { width: min(23rem, 82vw); }
+.rail.has-phones .pc-cover { aspect-ratio: auto; height: 20.5rem; }
+.pc-more { background: none; border: 0; padding: .5rem 0 0; text-align: left; }
+
+.proj-dialog {
+  position: fixed; inset: 0; margin: auto; width: min(40rem, 92vw); max-height: 90vh; padding: 0; overflow: hidden;
+  border: 1px solid #C9CEC4; border-radius: 1rem; background: #EDEFEA; color: #1B1F2A;
+  box-shadow: 0 30px 80px -20px rgba(27, 31, 42, .45);
+  opacity: 0; transform: translateY(16px) scale(.985);
+  transition: opacity .28s ease, transform .34s cubic-bezier(.2, .7, .2, 1);
+}
+.proj-dialog:not([open]) { display: none; }
+.proj-dialog.is-open { opacity: 1; transform: none; }
+.proj-dialog::backdrop { background: rgba(27, 31, 42, .45); backdrop-filter: blur(4px); opacity: 0; transition: opacity .28s ease; }
+.proj-dialog.is-open::backdrop { opacity: 1; }
+
+.dlg-scroll { max-height: 90vh; overflow: auto; overscroll-behavior: contain; }
+.dlg-x {
+  position: absolute; top: .75rem; right: .75rem; z-index: 3; display: flex; align-items: center; justify-content: center;
+  width: 2.2rem; height: 2.2rem; padding: 0; border-radius: 9999px; border: 1px solid #C9CEC4; background: rgba(237, 239, 234, .92);
+  transition: border-color .2s, color .2s;
+}
+.dlg-x:hover { border-color: #2B50FF; color: #2B50FF; }
+.dlg-handle { display: none; }
+.dlg-info { display: flex; flex-direction: column; gap: .75rem; padding: 1.5rem; }
+.dlg-title { font-family: Unbounded, sans-serif; font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+.dlg-tag { color: #5B6170; }
+.dlg-nda { border: 1px dashed #1B1F2A; border-radius: .6rem; padding: .5rem .75rem; font-size: .85rem; }
+.dlg-label { margin-top: .4rem; font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #5B6170; }
+.dlg-points { padding-left: 1.1rem; list-style: disc; font-size: .95rem; }
+.dlg-points li { margin: .25rem 0; }
+.dlg-links { display: flex; gap: 1.25rem; margin-top: .5rem; font-size: .9rem; font-weight: 500; }
+.dlg-open { overflow: hidden; }
+
+/* Телефон: шторка на всю ширину, выезжает снизу, без отступов по краям */
+@media (max-width: 639px) {
+  .proj-dialog {
+    inset: auto 0 0 0; margin: 0; width: 100%; max-width: 100%; max-height: 92vh; max-height: 92dvh;
+    border: 0; border-radius: 1.25rem 1.25rem 0 0; opacity: 1; transform: translateY(100%);
+    transition: transform .36s cubic-bezier(.32, .72, 0, 1);
+  }
+  .proj-dialog.is-open { transform: none; }
+  .dlg-scroll { max-height: 92vh; max-height: 92dvh; }
+  .dlg-info { padding: 1.25rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px)); }
+  .dlg-x { top: .6rem; right: .6rem; }
+  .dlg-handle { display: block; position: absolute; top: 0; left: 0; right: 0; z-index: 2; height: 2rem; touch-action: none; cursor: grab; }
+  .dlg-handle::after { content: ''; position: absolute; top: .5rem; left: 50%; width: 2.5rem; height: .25rem; margin-left: -1.25rem; border-radius: 9999px; background: rgba(255, 255, 255, .85); box-shadow: 0 0 0 1px rgba(27, 31, 42, .15); }
+}
+@media (prefers-reduced-motion: reduce) { .proj-dialog, .proj-dialog::backdrop { transition: none; } }
+
+/* Без полос прокрутки в окне (колесо, трекпад и свайп работают как раньше) */
+.dlg-scroll { scrollbar-width: none; }
+.dlg-scroll::-webkit-scrollbar { display: none; }
+
+/* Десктоп: в окне мобильного проекта ровно 3 телефона в ряд, крупнее */
+@media (min-width: 640px) {
+  .dlg-scroll { --pw: calc((min(40rem, 92vw) - 2px - 3rem) / 3); }
+  .dlg-scroll .strip-cover { height: calc(var(--pw) * 1.876 + 2.5rem); }
+  .dlg-scroll .strip-track { padding: 0 .75rem; scroll-padding-inline: .75rem; }
+  .dlg-scroll .phone { width: var(--pw); height: calc(var(--pw) * 1.876); }
+}
+
+/* Подсказка «Почта скопирована» */
+.copy-tip {
+  position: absolute; left: 0; bottom: calc(100% + .5rem); z-index: 5; pointer-events: none; white-space: nowrap;
+  padding: .3rem .75rem; border-radius: .5rem; background: #1B1F2A; color: #EDEFEA; font-size: .8rem; font-weight: 500; line-height: 1.4;
+  opacity: 0; transform: translateY(4px); transition: opacity .2s ease, transform .2s ease;
+}
+.copy-tip::after { content: ''; position: absolute; top: 100%; left: 1rem; border: .3rem solid transparent; border-top-color: #1B1F2A; }
+.copy-tip.is-on { opacity: 1; transform: none; }
+
+/* Подсказка при наведении (только где есть настоящий hover) и при фокусе с клавиатуры */
+@media (hover: hover) {
+  #copy-email:hover ~ .copy-tip[data-hint] { opacity: 1; transform: none; }
+}
+#copy-email:focus-visible ~ .copy-tip[data-hint] { opacity: 1; transform: none; }
+.copy-li.is-copied #copy-email ~ .copy-tip[data-hint] { opacity: 0; transform: translateY(4px); }
