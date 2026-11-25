@@ -184,6 +184,9 @@ const stack = [
 const sectionsEl = document.getElementById('sections');
 const dlg = document.getElementById('project-dialog');
 const linkClass = 'btn js-btn';
+const chev = (d) => `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+const chevL = chev('M11 3.5L5.5 9l5.5 5.5');
+const chevR = chev('M7 3.5L12.5 9 7 14.5');
 const imgsOf = (p) => (p.images && p.images.length ? p.images : (p.image ? [p.image] : []));
 
 /* ---------- Галерея в окне подробностей (как раньше) ---------- */
@@ -209,8 +212,8 @@ function coverHTML(p) {
   return `
     <div data-gallery class="relative aspect-[16/9] overflow-hidden bg-line/60" role="region" aria-roledescription="карусель" aria-label="Фото проекта ${p.title}">
       <div class="gallery-track flex h-full snap-x snap-mandatory overflow-x-auto" tabindex="0">${slides}</div>
-      <button type="button" data-prev aria-label="Предыдущее фото" class="gallery-btn left-2">‹</button>
-      <button type="button" data-next aria-label="Следующее фото" class="gallery-btn right-2">›</button>
+      <button type="button" data-prev aria-label="Предыдущее фото" class="gallery-btn left-2">${chevL}</button>
+      <button type="button" data-next aria-label="Следующее фото" class="gallery-btn right-2">${chevR}</button>
       <div class="absolute inset-x-0 bottom-2 flex justify-center gap-1.5">${dots}</div>
     </div>`;
 }
@@ -222,8 +225,8 @@ function mobileCoverHTML(p, imgs) {
   return `
     <div data-gallery data-strip class="strip-cover relative overflow-hidden bg-accent/10" role="region" aria-roledescription="карусель" aria-label="Экраны приложения ${p.title}">
       <div class="gallery-track strip-track" tabindex="0">${phones}</div>
-      <button type="button" data-prev aria-label="Предыдущие экраны" class="gallery-btn left-2">‹</button>
-      <button type="button" data-next aria-label="Следующие экраны" class="gallery-btn right-2">›</button>
+      <button type="button" data-prev aria-label="Предыдущие экраны" class="gallery-btn left-2">${chevL}</button>
+      <button type="button" data-next aria-label="Следующие экраны" class="gallery-btn right-2">${chevR}</button>
     </div>`;
 }
 
@@ -333,8 +336,8 @@ function renderSections() {
             <p class="mt-2 max-w-xl text-muted">${s.desc}</p>
           </div>
           <div class="flex gap-2">
-            <button type="button" data-rail-prev class="rail-btn" aria-label="Назад">‹</button>
-            <button type="button" data-rail-next class="rail-btn" aria-label="Вперёд">›</button>
+            <button type="button" data-rail-prev class="rail-btn" aria-label="Назад">${chevL}</button>
+            <button type="button" data-rail-next class="rail-btn" aria-label="Вперёд">${chevR}</button>
           </div>
         </div>
         ${s.note ? `<p class="proj-note">${s.note}</p>` : ''}
