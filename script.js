@@ -134,7 +134,7 @@ const projects = [
     role: 'Frontend и backend',
     points: ['Разработал клиентскую и серверную часть'],
     stack: ['React', 'Next.js', 'Nest.js'],
-    demoApp: 'https://jambeat.vercel.app/', type: 'mobile', code: '',
+    demo: 'https://jambeat.vercel.app/', type: 'mobile', code: '',
     images: ['images/jambeat-2.png', 'images/jambeat-3.png', 'images/jambeat-4.png', 'images/jambeat-5.png', 'images/jambeat-6.png', 'images/jambeat-7.png', 'images/jambeat-8.png', 'images/jambeat-9.png']
   },
   {
